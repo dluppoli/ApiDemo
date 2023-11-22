@@ -1,7 +1,9 @@
 ﻿using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +46,7 @@ namespace ApiDemo
             }*/
 
 
-            try
+            /*try
             {
                 var client = new RestClient(@"https://jsonplaceholder.typicode.com/posts");
                 //var client = new RestClient(@"https://webhook.site/69e136c7-6226-4601-be27-e98ef7560c23");
@@ -64,7 +66,18 @@ namespace ApiDemo
             catch (Exception ex)
             {
 
-            }
+            }*/
+
+            var options = new RestClientOptions("https://195.231.85.237/api/v1/")
+            {
+                Authenticator = new JwtAuthenticator("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjIiLCJuYmYiOjE3MDA2NDI2MzgsImV4cCI6MTcwNjY0MjYzOCwiaWF0IjoxNzAwNjQyNjM4fQ.ou5JFqYekPe0lDPZtKSwFgBQePVppGBKAZHkFGdFIr4"),
+                RemoteCertificateValidationCallback = (s, c, ch, ss) => true
+            };
+
+            var client = new RestClient(options);
+            var req = new RestRequest("Veicoli");
+            var resp = await client.GetAsync(req);
+
             Console.ReadLine();
         }
     }
