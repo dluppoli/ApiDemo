@@ -17,18 +17,25 @@ namespace API.Controllers
     {
         [Route("")]
         [HttpGet]
-        public async Task<List<GameDto>> GetAll()
+        public async Task<List<GameDto>> GetAll([FromUri]int page=1, [FromUri]int pageSize=999999)
         {
             using(OlympicsContext context = new OlympicsContext())
             {
-                return await context.Games
-                    .Select(s=> new GameDto { 
+                var listGame = await context.Games
+                    /*.Select(s=> new GameDto { 
                         Id = s.Id,
                         Games = s.Games,
                         Year = s.Year,
                         Season = s.Season
-                    })
+                    })*/
                     .ToListAsync();
+
+                List<GameDto> risultati = new List<GameDto>();
+                foreach (var item in listGame)
+                {
+                    risultati.Add(item.ToDto());
+                }
+                return risultati;
             }
         }
 
@@ -39,16 +46,16 @@ namespace API.Controllers
             using (OlympicsContext context = new OlympicsContext())
             {
                 var g = await context.Games
-                    .Select(s => new GameDto
+                    /*.Select(s => new GameDto
                     {
                         Id = s.Id,
                         Games = s.Games,
                         Year = s.Year,
                         Season = s.Season
-                    })
+                    })*/
                     .FirstOrDefaultAsync(w=>w.Id==id);
 
-                if (g != null) return Ok(g);
+                if (g != null) return Ok(g.ToDto());
                 return NotFound();
                 //BadRequest()
                 //InternalServerError()
@@ -65,22 +72,22 @@ namespace API.Controllers
             {
                 using (var context = new OlympicsContext())
                 {
-                    Game g = new Game
-                    {
+                    Game g = new Game(game);
+                    /*{
                         Games = game.Games,
                         Season = game.Season,
                         Year = game.Year
-                    };
+                    };*/
 
                     context.Games.Add(g);
                     await context.SaveChangesAsync();
-                    return new GameDto
+                    return g.ToDto();/*new GameDto
                     {
                         Id = g.Id,
                         Season = g.Season,
                         Year = g.Year,
                         Games = g.Games
-                    };
+                    };*/
                 }
             }
             catch (Exception ex)
@@ -99,9 +106,10 @@ namespace API.Controllers
                 var candidate = await context.Games.FirstOrDefaultAsync(w => w.Id == id);
                 if( candidate==null) throw new HttpResponseException(HttpStatusCode.NotFound);
 
-                candidate.Season = game.Season;
+                /*candidate.Season = game.Season;
                 candidate.Year = game.Year;
-                candidate.Games = game.Games;
+                candidate.Games = game.Games;*/
+                candidate.UpdatefromDto(game);
 
                 await context.SaveChangesAsync();
             }
@@ -119,6 +127,35 @@ namespace API.Controllers
                 context.Games.Remove(candidate);
                 await context.SaveChangesAsync();
             }
+        }
+
+
+        [Route("Next")]
+        [HttpGet]
+        public string GetNext()
+        {
+            return "Next";
+        }
+
+        [Route("{id}/Athletes")]
+        [HttpGet]
+        public string GetAthletes(int id)
+        {
+            return $"{id}/Athletes";
+        }
+
+        [Route("{id}/Athletes/WithMedals")]
+        [HttpGet]
+        public string GetAthletesWithMedals(int id)
+        {
+            return $"{id}/Athletes/WithMedals";
+        }
+
+        [Route("{idGame}/Athletes/{idAthlete}")]
+        [HttpGet]
+        public string GetAthleteByGame(int idGame, int idAthlete)
+        {
+            return $"{idGame}/Athletes/{idAthlete}";
         }
 
     }
