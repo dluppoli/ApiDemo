@@ -88,5 +88,38 @@ namespace API.Controllers
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
         }
+
+        [Route("{id}")]
+        [HttpPut]
+        public async Task editGame(int id,[FromBody] GameDto game)
+        {
+            if (id != game.Id) throw new HttpResponseException(HttpStatusCode.BadRequest);
+            using(var context = new OlympicsContext())
+            {
+                var candidate = await context.Games.FirstOrDefaultAsync(w => w.Id == id);
+                if( candidate==null) throw new HttpResponseException(HttpStatusCode.NotFound);
+
+                candidate.Season = game.Season;
+                candidate.Year = game.Year;
+                candidate.Games = game.Games;
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        [Route("{id}")]
+        [HttpDelete]
+        public async Task deleteGame(int id)
+        {
+            using (var context = new OlympicsContext())
+            {
+                var candidate = await context.Games.FirstOrDefaultAsync(w => w.Id == id);
+                if (candidate == null) throw new HttpResponseException(HttpStatusCode.NotFound);
+
+                context.Games.Remove(candidate);
+                await context.SaveChangesAsync();
+            }
+        }
+
     }
 }
