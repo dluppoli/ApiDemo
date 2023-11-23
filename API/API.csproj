@@ -294,6 +294,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Sports\Index.cshtml" />
     <Content Include="Views\Sports\Detail.cshtml" />
+    <Content Include="Views\Sports\Edit.cshtml" />
+    <Content Include="Views\Sports\Create.cshtml" />
+    <Content Include="Views\Sports\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
