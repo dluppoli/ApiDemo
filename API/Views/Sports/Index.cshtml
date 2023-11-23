@@ -1,0 +1,35 @@
+﻿@model List<API.Models.Event>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <h1>Elenco sport</h1>
+    <p>Ho trovato @Model.Count</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Sport</th>
+                <th>Evento</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var e in Model)
+            {
+                <tr>
+                    <td>@e.Id</td>
+                    <td>@e.Sport</td>
+                    <td>@e.Event1</td>
+                    <td>@Html.ActionLink("Detail", "Detail", new { id = e.Id })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</main>
+
+
