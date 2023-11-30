@@ -1,4 +1,4 @@
-﻿@model List<API.Models.Event>
+﻿@model API.ViewModels.PaginatedViewModel<API.Models.Event>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,7 +6,7 @@
 
 <main>
     <h1>Elenco sport</h1>
-    <p>Ho trovato @Model.Count</p>
+    <p>Ho trovato @Model.results.Count</p>
     @Html.ActionLink("Nuovo Sport", "Create")
 
     <table class="table">
@@ -19,7 +19,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var e in Model)
+            @foreach (var e in Model.results)
             {
                 <tr>
                     <td>@e.Id</td>
@@ -34,6 +34,25 @@
             }
         </tbody>
     </table>
+
+    @{ 
+        //int pages = Model.total / Model.pagesize;
+        //int resto = Model.total % Model.pagesize;
+        //if (resto != 0)
+        //{
+        //    pages++;
+        //}
+        int pages = (int) Math.Ceiling(1.0 * Model.total / Model.pagesize);
+
+        <ul class="pagination">
+            @for(int i = 1; i<=pages; i++)
+            {
+                <li class="page-item @( i==Model.page ? "active" : "")">
+                    @Html.ActionLink(i.ToString(), "Index", new { page = i, pagesize = Model.pagesize} )
+                </li>
+            }
+        </ul>
+    }
 
 </main>
 

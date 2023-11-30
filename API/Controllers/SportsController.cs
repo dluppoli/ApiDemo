@@ -1,5 +1,6 @@
 ﻿using API.Dtos;
 using API.Models;
+using API.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,9 +11,11 @@ using System.Web.Mvc;
 
 namespace API.Controllers
 {
+    [RoutePrefix("Sports")]
     public class SportsController : Controller
     {
-        public async Task<ActionResult> Index()
+        [Route("Index/{page}/{pagesize}")]
+        public async Task<ActionResult> Index(int page, int pagesize)
         {
             ViewBag.Title = "Elenco sport";
             /*ViewBag.MioMessaggio = "Hello World!";
@@ -28,10 +31,28 @@ namespace API.Controllers
                 Height = 180
             };*/
 
+            if (page <= 0) page = 1;
+            if(pagesize<=0) pagesize = 25;
+
             using(var context = new OlympicsContext())
             {
-                var risultati = await context.Events.ToListAsync();
-                return View(risultati);
+                var risultati = await context.Events
+                    .OrderBy(e => e.Id)
+                    .Skip( (page-1)*pagesize )
+                    .Take(pagesize)
+                    .ToListAsync();
+
+                var conteggio = await context.Events.CountAsync();
+
+                var vm = new PaginatedViewModel<Event>
+                {
+                    page = page,
+                    pagesize = pagesize,
+                    total = conteggio,
+                    results = risultati
+                };
+
+                return View(vm);
             }
         }
 

@@ -13,6 +13,14 @@ namespace API
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapMvcAttributeRoutes();
+
+            /*routes.MapRoute(
+                name:"GetAllPaginated",
+                url : "{controller}/{action}/{page}/{pagesize}",
+                defaults: new { controller = "Home", action = "Index", page = UrlParameter.Optional, pagesize = UrlParameter.Optional }
+            );*/
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
