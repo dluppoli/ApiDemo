@@ -99,7 +99,9 @@ namespace API.Controllers
 
         [HttpPost]
         public async Task<ActionResult> Create(Event e)
-        { 
+        {
+            if (!ModelState.IsValid) return View();
+
             using(var context = new OlympicsContext())
             {
                 context.Events.Add(e);

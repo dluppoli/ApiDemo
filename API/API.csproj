@@ -201,6 +201,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ModelsExtensions\Event.cs" />
     <Compile Include="Models\ModelsExtensions\Game.cs" />
     <Compile Include="Models\nAthlete.cs">
       <DependentUpon>Model1.tt</DependentUpon>
